@@ -38,9 +38,10 @@ function set_watch(target){
     let watch_=
         '<div id="h_watch" title="Click:サイズ　Ctrl+Click:英⇔日">'+
         '<span class="h_disp"></span>'+
-        '<style>#h_watch { font: bold 16px Meiryo; color: #888; height: 0; '+
-        'text-align: right; position: relative; top: -90px; right: 2px; cursor: pointer; } '+
-        '#h_watch:hover .h_disp { background: #bcdcea; } '+
+        '<style>#h_watch { font: bold 16px/16px Meiryo; color: #888; height: 0; '+
+        'text-align: right; position: relative; top: -90px; right: 0; cursor: pointer; } '+
+        '#h_watch .h_disp { padding: 4px 4px 2px; display: inline-block; border-radius: 3px; } '+
+        '#h_watch:hover .h_disp { outline: 1px solid #ccc; } '+
         '.h_disp .y, .h_disp .d { margin-right: 8px; } '+
         '.h_disp .m { margin-right: 2px; } '+
         '.h_disp .yEN, .h_disp .mEN { margin-right: 0; } '+
@@ -86,7 +87,7 @@ function set_type(){
 
             disp_watch();
             setTimeout(()=>{
-            document.cookie='HOME_w='+hw_type+'; Max-Age=2592000';
+                document.cookie='HOME_w='+hw_type+'; Max-Age=2592000';
             }, 200); }}
 
 } // set_type()
