@@ -12,11 +12,21 @@
 
 
 let hw_type=0; // 表示タイプ
+let hw_type_JNE=0; // 表示タイプ 日本語・数字・英語
 
 let HOME_w=get_cookie('HOME_w');
-if(HOME_w){ // Cookieの更新
-    hw_type=HOME_w;
-    document.cookie='HOME_w='+hw_type+'; Max-Age=2592000'; }
+if(HOME_w==0 || HOME_w==1 || HOME_w==2){
+    hw_type=HOME_w; }
+else{ // Cookieの初期化
+    hw_type=0; }
+document.cookie='HOME_w='+hw_type+'; Max-Age=2592000';// Cookieの更新
+
+let HOME_w_JNE=get_cookie('HOME_w_JNE');
+if(HOME_w_JNE==0 || HOME_w_JNE==1 || HOME_w_JNE==2){
+    hw_type_JNE=HOME_w_JNE; }
+else{ // Cookieの初期化
+    hw_type_JNE=0; }
+document.cookie='HOME_w_JNE='+hw_type_JNE+'; Max-Age=2592000';// Cookieの更新
 
 
 
@@ -63,32 +73,32 @@ function set_watch(target){
 function set_type(){
     let h_watch=document.querySelector('#h_watch');
     if(h_watch){
-        h_watch.onclick=function(event){
+        h_watch.onmouseup=function(event){
             event.preventDefault();
             event.stopImmediatePropagation();
             if(event.ctrlKey){
-                if(hw_type<3){
-                    hw_type +=3; }
-                else if(2<hw_type){
-                    hw_type -=3; }}
+                if(hw_type_JNE==0){
+                    hw_type_JNE=1; }
+                else if(hw_type_JNE==1){
+                    hw_type_JNE=2; }
+                else if(hw_type_JNE==2){
+                    hw_type_JNE=0; }}
             else{
                 if(hw_type==0){
                     hw_type=1; }
                 else if(hw_type==1){
                     hw_type=2; }
                 else if(hw_type==2){
-                    hw_type=0; }
-                else if(hw_type==3){
-                    hw_type=4; }
-                else if(hw_type==4){
-                    hw_type=5; }
-                else if(hw_type==5){
-                    hw_type=3; }}
+                    hw_type=0; }}
 
-            disp_watch();
             setTimeout(()=>{
-                document.cookie='HOME_w='+hw_type+'; Max-Age=2592000';
-            }, 200); }}
+                if(0<=hw_type<3){
+                    document.cookie='HOME_w='+hw_type+'; Max-Age=2592000'; }
+                if(0<=hw_type_JNE<3){
+                    document.cookie='HOME_w_JNE='+hw_type_JNE+'; Max-Age=2592000'; }
+                disp_watch();
+            }, 200);
+        }}
 
 } // set_type()
 
@@ -122,68 +132,98 @@ function disp_watch(){
         let WeekEN=["<span style='color: red'>Sun</span>", "Mon", "Tue", "Wed",
                     "Thu", "Fri", "<span style='color: #2196F3'>Sat</span>"];
 
+        let MonthEN=["Jan.", "Feb.", "Mar.", "Apr.", "May.", "Jun.", "Jul.", "Aug.", "Sep.",
+                     "Oct.", "Nov.", "Dec."];
+
 
         let h_display;
 
-        if(hw_type==0){
-            h_display=
-                '<span class="h_disp">'+
-                '<span class="y">'+ Year +'年</span>'+
-                '<span class="m">'+ Month +'月</span>'+
-                '<span class="d">'+ Date +'日</span>'+
-                '<span class="w">'+ WeekJP[Wday] +'</span>'+
-                Hour +'<span class="dd">:</span>'+
-                Min +'<span class="dd">:</span>'+
-                Sec +'</span>'; }
+        if(hw_type_JNE==0){
+            if(hw_type==0){
+                h_display=
+                    '<span class="h_disp">'+
+                    '<span class="y">'+ Year +'年</span>'+
+                    '<span class="m">'+ Month +'月</span>'+
+                    '<span class="d">'+ Date +'日</span>'+
+                    '<span class="w">'+ WeekJP[Wday] +'</span>'+
+                    Hour +'<span class="dd">:</span>'+
+                    Min +'<span class="dd">:</span>'+
+                    Sec +'</span>'; }
+            else if(hw_type==1){
+                h_display=
+                    '<span class="h_disp">'+
+                    '<span class="m">'+ Month +'月</span>'+
+                    '<span class="d">'+ Date +'日</span>'+
+                    '<span class="w">'+ WeekJP[Wday] +'</span>'+
+                    Hour +'<span class="dd">:</span>'+
+                    Min +'<span class="dd">:</span>'+
+                    Sec +'</span>'; }
+            else if(hw_type==2){
+                h_display=
+                    '<span class="h_disp">'+
+                    '<span class="m">'+ Month +'月</span>'+
+                    '<span class="d">'+ Date +'日</span>'+
+                    '<span class="w">'+ WeekJP[Wday] +'</span>'+
+                    Hour +'<span class="dd">:</span>'+
+                    Min +'</span>'; }}
 
-        else if(hw_type==1){
-            h_display=
-                '<span class="h_disp">'+
-                '<span class="m">'+ Month +'月</span>'+
-                '<span class="d">'+ Date +'日</span>'+
-                '<span class="w">'+ WeekJP[Wday] +'</span>'+
-                Hour +'<span class="dd">:</span>'+
-                Min +'<span class="dd">:</span>'+
-                Sec +'</span>'; }
+        else if(hw_type_JNE==1){
+            if(hw_type==0){
+                h_display=
+                    '<span class="h_disp">'+
+                    '<span class="yEN">'+ Year +'-</span>'+
+                    '<span class="mEN">'+ Month +'-</span>'+
+                    '<span class="d">'+ Date +'</span>'+
+                    '<span class="w">'+ WeekEN[Wday] +'</span>'+
+                    Hour +'<span class="dd">:</span>'+
+                    Min +'<span class="dd">:</span>'+
+                    Sec +'</span>'; }
+            else if(hw_type==1){
+                h_display=
+                    '<span class="h_disp">'+
+                    '<span class="mEN">'+ Month +'-</span>'+
+                    '<span class="d">'+ Date +'</span>'+
+                    '<span class="w">'+ WeekEN[Wday] +'</span>'+
+                    Hour +'<span class="dd">:</span>'+
+                    Min +'<span class="dd">:</span>'+
+                    Sec +'</span>'; }
+            else if(hw_type==2){
+                h_display=
+                    '<span class="h_disp">'+
+                    '<span class="mEN">'+ Month +'-</span>'+
+                    '<span class="d">'+ Date +'</span>'+
+                    '<span class="w">'+ WeekEN[Wday] +'</span>'+
+                    Hour +'<span class="dd">:</span>'+
+                    Min +'</span>'; }}
 
-        else if(hw_type==2){
-            h_display=
-                '<span class="h_disp">'+
-                '<span class="m">'+ Month +'月</span>'+
-                '<span class="d">'+ Date +'日</span>'+
-                '<span class="w">'+ WeekJP[Wday] +'</span>'+
-                Hour +'<span class="dd">:</span>'+
-                Min +'</span>'; }
-
-        else if(hw_type==3){
-            h_display=
-                '<span class="h_disp">'+
-                '<span class="yEN">'+ Year +'-</span>'+
-                '<span class="mEN">'+ Month +'-</span>'+
-                '<span class="d">'+ Date +'</span>'+
-                '<span class="w">'+ WeekEN[Wday] +'</span>'+
-                Hour +'<span class="dd">:</span>'+
-                Min +'<span class="dd">:</span>'+
-                Sec +'</span>'; }
-
-        else if(hw_type==4){
-            h_display=
-                '<span class="h_disp">'+
-                '<span class="mEN">'+ Month +'-</span>'+
-                '<span class="d">'+ Date +'</span>'+
-                '<span class="w">'+ WeekEN[Wday] +'</span>'+
-                Hour +'<span class="dd">:</span>'+
-                Min +'<span class="dd">:</span>'+
-                Sec +'</span>'; }
-
-        else if(hw_type==5){
-            h_display=
-                '<span class="h_disp">'+
-                '<span class="mEN">'+ Month +'-</span>'+
-                '<span class="d">'+ Date +'</span>'+
-                '<span class="w">'+ WeekEN[Wday] +'</span>'+
-                Hour +'<span class="dd">:</span>'+
-                Min +'</span>'; }
+        else if(hw_type_JNE==2){
+            if(hw_type==0){
+                h_display=
+                    '<span class="h_disp">'+
+                    '<span class="yEN">'+ Year +' </span>'+
+                    '<span class="mEN">'+ MonthEN[Month-1] +'</span>'+
+                    '<span class="d">'+ Date +'</span>'+
+                    '<span class="w">'+ WeekEN[Wday] +'</span>'+
+                    Hour +'<span class="dd">:</span>'+
+                    Min +'<span class="dd">:</span>'+
+                    Sec +'</span>'; }
+            else if(hw_type==1){
+                h_display=
+                    '<span class="h_disp">'+
+                    '<span class="mEN">'+ MonthEN[Month-1] +'</span>'+
+                    '<span class="d">'+ Date +'</span>'+
+                    '<span class="w">'+ WeekEN[Wday] +'</span>'+
+                    Hour +'<span class="dd">:</span>'+
+                    Min +'<span class="dd">:</span>'+
+                    Sec +'</span>'; }
+            else if(hw_type==2){
+                h_display=
+                    '<span class="h_disp">'+
+                    '<span class="mEN">'+ MonthEN[Month-1] +'</span>'+
+                    '<span class="d">'+ Date +'</span>'+
+                    '<span class="w">'+ WeekEN[Wday] +'</span>'+
+                    Hour +'<span class="dd">:</span>'+
+                    Min +'</span>'; }}
 
         return h_display;
 
@@ -202,6 +242,5 @@ function get_cookie(name){
             return cookie_req.split('=')[1]; }}
     if(!cookie_req){
         return 0; }}
-
 
 
