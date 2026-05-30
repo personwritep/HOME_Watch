@@ -1,0 +1,81 @@
+// ==UserScript==
+// @name         HOME Watch
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  HOME画面専用の日付曜日時計表示
+// @author       Ameba Blog User
+// @match        https://www.ameba.jp/home
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=ameba.jp
+// @noframes
+// @grant        none
+// ==/UserScript==
+
+
+let retry=0;
+let interval=setInterval(wait_target, 100);
+function wait_target(){
+    retry++;
+    if(retry>100){ // リトライ制限 100回 10secまで
+        clearInterval(interval); }
+    let target=document.querySelector('.HomeUserProfile');
+    if(target){
+        clearInterval(interval);
+        set_watch(target); }}
+
+
+function set_watch(target){
+    let watch_=
+        '<div id="h_watch"><span class="h_disp"></span>'+
+        '<style>#h_watch { font: bold 16px Meiryo; color: #888; height: 0; text-align: right; '+
+        'position: relative; top: -8px; right: 2px; z-index: 1; } '+
+        '.h_disp .y, .h_disp .d { margin-right: 8px; } .h_disp .m { margin-right: 2px; } '+
+        '.h_disp .w { margin-right: 12px; } .h_disp .dd { margin: 0 2px; } '+
+        '</style></div>';
+
+    if(!document.querySelector('#h_watch')){
+        target.insertAdjacentHTML('afterbegin', watch_ ); }
+
+    let time_d=setInterval(disp_watch, 1000);
+
+} // set_watch()
+
+
+
+function disp_watch(){
+    let h_watch=document.querySelector('#h_watch');
+    let now=new Date();
+
+    if(h_watch && h_watch.querySelector('.h_disp')){
+        h_watch.querySelector('.h_disp').remove();
+        h_watch.insertAdjacentHTML('afterbegin', get_d(now)); }
+
+
+    function getdouble(number){
+        return ("0" + number).slice(-2); }
+
+    function get_d(time){
+        let Year=time.getFullYear();
+        let Month=time.getMonth()+1;
+        let Date=time.getDate();
+        let Hour=getdouble(time.getHours());
+        let Min=getdouble(time.getMinutes());
+        let Sec=getdouble(time.getSeconds());
+
+        // Dateオブジェクトは曜日を0から6で保持しているため、変換
+        let WeekJP = [ "日", "月", "火", "水", "木", "金", "土" ] ;
+
+        let h_display=
+            '<span class="h_disp">'+
+            '<span class="y">'+ Year +'年</span>'+
+            '<span class="m">'+ Month +'月</span>'+
+            '<span class="d">'+ Date +'日</span>'+
+            '<span class="w">'+ WeekJP[time.getDay()] +'曜</span>'+
+            Hour +'<span class="dd">:</span>'+
+            Min +'<span class="dd">:</span>'+
+            Sec +'</span>';
+
+        return h_display;
+
+    } // get_d()
+
+} // disp_watch()
