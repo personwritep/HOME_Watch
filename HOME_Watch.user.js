@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name        HOME Watch
 // @namespace        http://tampermonkey.net/
-// @version        0.5
+// @version        0.6
 // @description        HOME画面専用の日付曜日時計表示
 // @author        Ameba Blog User
 // @match        https://www.ameba.jp/home
+// @match        https://blog.ameba.jp/ucs/entry/srventryupdateend*
 // @icon        https://www.google.com/s2/favicons?sz=64&domain=ameba.jp
 // @noframes
 // @grant        none
@@ -244,3 +245,73 @@ function get_cookie(name){
             return cookie_req.split('=')[1]; }}
     if(!cookie_req){
         return 0; }}
+
+
+// ============== UpdateEnd Page ==========================
+
+
+function set_watch2(target){
+    let watch_=
+        '<div id="h_watch2">'+
+        '<span class="h_disp2"></span>'+
+        '<style>#h_watch2 { font: bold 20px/16px Meiryo; color: #888; '+
+        'text-align: right; position: absolute; top: 80px; left: 24px; } '+
+        '#h_watch2 .h_disp2 { display: inline-block; } '+
+        '.h_disp2 .w { margin-right: 6px; } '+
+        '.entryComplete__text { padding-top: 24px; } '+
+        '</style></div>';
+
+    if(!document.querySelector('#h_watch2')){
+        target.insertAdjacentHTML('afterend', watch_ ); }
+
+    let time_d=setInterval(disp_watch2, 1000);
+
+} // set_watch2()
+
+
+
+function disp_watch2(){
+    let h_watch2=document.querySelector('#h_watch2');
+    let now=new Date();
+
+    if(h_watch2 && h_watch2.querySelector('.h_disp2')){
+        h_watch2.querySelector('.h_disp2').remove();
+        h_watch2.insertAdjacentHTML('afterbegin', get_d2(now)); }
+
+
+    function getdouble(number){
+        return ("0" + number).slice(-2); }
+
+    function get_d2(time){
+        let Year=time.getFullYear();
+        let Month=getdouble(time.getMonth()+1);
+        let Date=time.getDate();
+        let Wday=time.getDay();
+        let Hour=getdouble(time.getHours());
+        let Min=getdouble(time.getMinutes());
+        let Sec=getdouble(time.getSeconds());
+
+        // Dateオブジェクトは曜日を0から6で保持しているため、変換
+        let WeekJP=["<span style='color: red'>日曜</span>", "月曜", "火曜", "水曜",
+                    "木曜", "金曜", "<span style='color: #2196F3'>土曜</span>"];
+
+        let h_display=
+            '<span class="h_disp2">'+
+            '<span class="w">'+ WeekJP[Wday] +'</span>'+
+            '<span class="y">'+ Year +'年</span>'+
+            '<span class="m">'+ Month +'月</span>'+
+            '<span class="d">'+ Date +'日 </span>'+
+            Hour +'<span class="dd">:</span>'+
+            Min +'</span>';
+
+        return h_display;
+
+    } // get_d2()
+
+} // disp_watch2()
+
+
+
+let complete_date=document.querySelector('#subContentsArea .entryComplete__date');
+if(complete_date){
+    set_watch2(complete_date); }
