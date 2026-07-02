@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name        HOME Watch
 // @namespace        http://tampermonkey.net/
-// @version        0.6
+// @version        0.7
 // @description        HOME画面専用の日付曜日時計表示
 // @author        Ameba Blog User
 // @match        https://www.ameba.jp/home
 // @match        https://blog.ameba.jp/ucs/entry/srventryupdateend*
+// @match        https://blog.ameba.jp/ucs/entry/srventryinsertend*
 // @icon        https://www.google.com/s2/favicons?sz=64&domain=ameba.jp
 // @noframes
 // @grant        none
@@ -285,11 +286,10 @@ function disp_watch2(){
     function get_d2(time){
         let Year=time.getFullYear();
         let Month=getdouble(time.getMonth()+1);
-        let Date=time.getDate();
+        let Date=getdouble(time.getDate());
         let Wday=time.getDay();
         let Hour=getdouble(time.getHours());
         let Min=getdouble(time.getMinutes());
-        let Sec=getdouble(time.getSeconds());
 
         // Dateオブジェクトは曜日を0から6で保持しているため、変換
         let WeekJP=["<span style='color: red'>日曜</span>", "月曜", "火曜", "水曜",
