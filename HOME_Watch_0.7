@@ -68,6 +68,8 @@ function set_watch(target){
 
     set_type();
 
+    disp_watch();
+
     let time_d=setInterval(disp_watch, 1000);
 
 } // set_watch()
@@ -264,6 +266,8 @@ function set_watch2(target){
 
     if(!document.querySelector('#h_watch2')){
         target.insertAdjacentHTML('afterend', watch_ ); }
+
+    disp_watch2();
 
     let time_d=setInterval(disp_watch2, 1000);
 
