@@ -240,7 +240,7 @@ function disp_watch(){
 
 
 function get_cookie(name){
-    let cookie_req=document.cookie.split(';')
+    let cookie_req=document.cookie.split(';');
     for(let k=0; k<cookie_req.length; k++){
         cookie_req[k]=cookie_req[k].trim(); } // 前後の空白を削除
 
