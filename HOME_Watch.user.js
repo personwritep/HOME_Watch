@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        HOME Watch
 // @namespace        http://tampermonkey.net/
-// @version        0.7
+// @version        0.8
 // @description        HOME画面専用の日付曜日時計表示
 // @author        Ameba Blog User
 // @match        https://www.ameba.jp/home
@@ -16,7 +16,7 @@
 
 
 let hw_type=0; // 表示タイプ
-let hw_type_JNE=0; // 表示タイプ 日本語・数字・英語
+let hw_type_jne=0; // 表示タイプ 日本語・数字・英語
 
 let HOME_w=get_cookie('HOME_w');
 if(HOME_w==0 || HOME_w==1 || HOME_w==2){
@@ -25,12 +25,12 @@ else{ // Cookieの初期化
     hw_type=0; }
 document.cookie='HOME_w='+hw_type+'; Max-Age=2592000';// Cookieの更新
 
-let HOME_w_JNE=get_cookie('HOME_w_JNE');
-if(HOME_w_JNE==0 || HOME_w_JNE==1 || HOME_w_JNE==2){
-    hw_type_JNE=HOME_w_JNE; }
+let HOME_jne=get_cookie('HOME_jne');
+if(HOME_jne==0 || HOME_jne==1 || HOME_jne==2){
+    hw_type_jne=HOME_jne; }
 else{ // Cookieの初期化
-    hw_type_JNE=0; }
-document.cookie='HOME_w_JNE='+hw_type_JNE+'; Max-Age=2592000';// Cookieの更新
+    hw_type_jne=0; }
+document.cookie='HOME_jne='+hw_type_jne+'; Max-Age=2592000';// Cookieの更新
 
 
 
@@ -83,12 +83,12 @@ function set_type(){
             event.preventDefault();
             event.stopImmediatePropagation();
             if(event.ctrlKey){
-                if(hw_type_JNE==0){
-                    hw_type_JNE=1; }
-                else if(hw_type_JNE==1){
-                    hw_type_JNE=2; }
-                else if(hw_type_JNE==2){
-                    hw_type_JNE=0; }}
+                if(hw_type_jne==0){
+                    hw_type_jne=1; }
+                else if(hw_type_jne==1){
+                    hw_type_jne=2; }
+                else if(hw_type_jne==2){
+                    hw_type_jne=0; }}
             else{
                 if(hw_type==0){
                     hw_type=1; }
@@ -100,8 +100,8 @@ function set_type(){
             setTimeout(()=>{
                 if(0<=hw_type<3){
                     document.cookie='HOME_w='+hw_type+'; Max-Age=2592000'; }
-                if(0<=hw_type_JNE<3){
-                    document.cookie='HOME_w_JNE='+hw_type_JNE+'; Max-Age=2592000'; }
+                if(0<=hw_type_jne<3){
+                    document.cookie='HOME_jne='+hw_type_jne+'; Max-Age=2592000'; }
                 disp_watch();
             }, 200);
         }}
@@ -144,7 +144,7 @@ function disp_watch(){
 
         let h_display;
 
-        if(hw_type_JNE==0){
+        if(hw_type_jne==0){
             if(hw_type==0){
                 h_display=
                     '<span class="h_disp">'+
@@ -173,7 +173,7 @@ function disp_watch(){
                     Hour +'<span class="dd">:</span>'+
                     Min +'</span>'; }}
 
-        else if(hw_type_JNE==1){
+        else if(hw_type_jne==1){
             if(hw_type==0){
                 h_display=
                     '<span class="h_disp">'+
@@ -202,7 +202,7 @@ function disp_watch(){
                     Hour +'<span class="dd">:</span>'+
                     Min +'</span>'; }}
 
-        else if(hw_type_JNE==2){
+        else if(hw_type_jne==2){
             if(hw_type==0){
                 h_display=
                     '<span class="h_disp">'+
@@ -240,13 +240,17 @@ function disp_watch(){
 
 
 function get_cookie(name){
-    let cookie_req=document.cookie.split('; ').find(row=>row.startsWith(name));
-    if(cookie_req){
-        if(cookie_req.split('=')[1]==null){
+    let cookie_req=document.cookie.split(';')
+    for(let k=0; k<cookie_req.length; k++){
+        cookie_req[k]=cookie_req[k].trim(); } // 前後の空白を削除
+
+    let cookie=cookie_req.find(row=>row.startsWith(name+'='));
+    if(cookie){
+        if(cookie.split('=')[1]==null){
             return 0; }
         else{
-            return cookie_req.split('=')[1]; }}
-    if(!cookie_req){
+            return cookie.split('=')[1]; }}
+    if(!cookie){
         return 0; }}
 
 
