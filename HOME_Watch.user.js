@@ -5,8 +5,8 @@
 // @description        HOME画面専用の日付曜日時計表示
 // @author        Ameba Blog User
 // @match        https://www.ameba.jp/home
-// @match        https://blog.ameba.jp/ucs/entry/srventryupdateend*
 // @match        https://blog.ameba.jp/ucs/entry/srventryinsertend*
+// @match        https://blog.ameba.jp/ucs/entry/srventryupdateend*
 // @icon        https://www.google.com/s2/favicons?sz=64&domain=ameba.jp
 // @noframes
 // @grant        none
